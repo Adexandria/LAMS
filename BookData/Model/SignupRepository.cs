@@ -14,6 +14,7 @@ namespace BookData.Model
         }
         public Signup Add(Signup signup)
         {
+           
              db.Signups.Add(signup);
             return signup;
 
@@ -24,10 +25,14 @@ namespace BookData.Model
             return db.SaveChanges();
         }
 
-        public Signup GetAll(string username)
+        public string GetAll(string username)
         {
-            return db.Signups.Where(a=>a.UserName==username).FirstOrDefault();
+            var query = db.Signups.Where(a=>a.UserName==username).FirstOrDefault();
+          var pass = Encryption.DecodeFrom64(query.Password);
+            return pass;
         }
+
+       
 
         public Signup UserSearch(string username, string password)
         {

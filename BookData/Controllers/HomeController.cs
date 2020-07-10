@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BookData.Model;
+﻿using BookData.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,21 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookData.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class HomeController : Controller
     {
 
         private readonly ILogin login;
-       
+        private readonly IBook book;
         private Details details;
         
-        public HomeController(ILogin login)
+        public HomeController(ILogin login,IBook book)
         {
 
             this.login = login;
-            
+             this.book = book;
         }
-        
 
+       
+       
+        
 
 
         [HttpGet]
@@ -40,7 +40,7 @@ namespace BookData.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound("Username not found");
                 }
             }
             catch
@@ -49,5 +49,20 @@ namespace BookData.Controllers
             }
         }
         
+        [HttpPost("{Admin}")]
+        public IActionResult Post(Books books, string username, string password)
+        {
+            var admin = login.GetDetails(username, password);
+            if (admin != null)
+            {
+                book.Add(books);
+                book.Commit();
+                return Created("Book created", books);
+            }
+            else
+            {
+                return NotFound("You are not an Admin");
+            }
+        }
     }
 }

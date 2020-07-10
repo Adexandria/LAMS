@@ -27,8 +27,10 @@ namespace BookData
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddDbContext<AppDbcontext>();
             services.AddControllers();
+            services.AddScoped<IBook, AdminBooks>();
             services.AddScoped<ISign_up,SignupRepository>();
             services.AddScoped<ILogin, AdminRepository>();
         }
@@ -44,7 +46,8 @@ namespace BookData
             app.UseHttpsRedirection();
 
             app.UseRouting();
-           
+
+               
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

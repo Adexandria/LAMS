@@ -9,7 +9,8 @@ namespace BookData.Model
     {
         Signup Add(Signup signup);
         int Commit();
-        Signup GetAll(string username);
+        string GetAll(string username);
+        
         Signup UserSearch(string username, string password);
     }
 }

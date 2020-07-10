@@ -11,15 +11,15 @@ using Microsoft.AspNetCore.Routing;
 namespace BookData.Controllers
 {
     [Route("api/[controller]")]
-        [ApiController]
+    [ApiController]
     public class LoginController : Controller
     {
         private readonly ISign_up sign;
-        private readonly LinkGenerator gene;
-        public LoginController(ISign_up sign, LinkGenerator gene)
+        
+        public LoginController(ISign_up sign )
         {
             this.sign = sign;
-            this.gene = gene;
+            
         }
         
        
@@ -33,6 +33,7 @@ namespace BookData.Controllers
             }
             else
             {
+                Encryption.EncodePasswordToBase64(signup.Password);
                 sign.Add(signup);
                 sign.Commit();
                 return Created("Username created", signup);
@@ -41,17 +42,19 @@ namespace BookData.Controllers
 
         }
         [HttpGet("{user}")]
-        public IActionResult Get(string username)
+        public IActionResult Get(string username,string password)
         {
-            var user = sign.GetAll(username);
-            if (user != null)
+            var name = sign.GetAll(username);
+            if(name != null)
             {
-                return Ok("Success");
+             var user = sign.UserSearch(username,password);
+              return Ok("Success");
             }
-            else
-            {
+            
+           
                 return NotFound("Username doesn't exist ");
-            }
+            
+           
         }
        
       
